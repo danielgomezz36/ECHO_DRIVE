@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EchoDrive · Demo de adaptaciones</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <!-- Filtros SVG para simular deficiencias de color (Machado et al., 2009, severidad 1.0; se aplican en RGB lineal) -->
@@ -131,6 +131,15 @@
           <ol id="log" class="log" aria-live="polite"></ol>
         </div>
       </div>
+      <div class="panel diag">
+        <h2>Diagnóstico de vibración (iPhone)</h2>
+        <p class="small"><b>1.</b> Toca este interruptor con el dedo. Es el toque «nativo» de Safari:</p>
+        <label class="check"><input type="checkbox" switch id="diagReal"> Interruptor real</label>
+        <p class="small"><b>2.</b> Toque por código (la página lo intenta sola). Prueba las dos variantes:</p>
+        <div class="controls"><button id="diagA">Toque por código A</button><button id="diagB">Toque por código B</button></div>
+        <p id="diagMsg" class="readout" aria-live="polite"></p>
+        <p id="diagInfo" class="small muted"></p>
+      </div>
       <p class="help">Un aviso <b>crítico</b> sale siempre por al menos dos canales: si has desactivado demasiados, se reactivan solo para ese aviso y el registro lo indica. La vibración real depende del dispositivo (Android/Chrome); si no está disponible se simula en el volante.</p>
     </section>
 
@@ -161,7 +170,7 @@
     </section>
   </main>
 
-  <script src="logic.js"></script>
-  <script src="app.js"></script>
+  <script src="logic.js?v=4"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

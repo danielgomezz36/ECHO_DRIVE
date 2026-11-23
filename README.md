@@ -70,3 +70,15 @@ test_logic.js   pruebas de la lógica
 - La vibración en iPhone es una aproximación (ver arriba) y no se ha podido verificar en un dispositivo iOS durante el desarrollo.
 - Umbrales y tiempos (5 km/h, 8 s de enfriamiento, duración de los avisos, 1,5 s de pulsación del SOS) son hipótesis
   de diseño pendientes de validar con usuarios.
+
+## Si la vibración no funciona en el iPhone
+
+En la pestaña **Reto 9** hay un panel «Diagnóstico de vibración (iPhone)»:
+
+1. Toca el **interruptor real** con el dedo. Si no notas nada, el problema no es la página: revisa
+   **Ajustes → Sonidos y vibraciones → Hápticos del sistema** (activados), prueba sin modo de bajo consumo y comprueba la versión de iOS.
+2. Si el interruptor real sí vibra, prueba **«Toque por código A»** y **«Toque por código B»** y anota cuál funciona.
+3. Anota también la línea gris de información (iOS, `navigator.vibrate`, https). Es lo que debe ir en la tabla de la memoria.
+
+Si la página no muestra el panel o la pestaña «Test de daltonismo», se está sirviendo una versión antigua: sube de nuevo todos los archivos
+(se reemplazan los existentes) y recarga Safari cerrando la pestaña, o añade `?v=5` al final de la dirección.

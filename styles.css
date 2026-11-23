@@ -83,3 +83,8 @@ textarea.csv{width:100%;min-height:120px;background:var(--panel2);color:var(--tx
 /* interruptor oculto que usa Safari/iOS para dar un toque háptico */
 .hsw{position:fixed;bottom:0;left:0;width:1px;height:1px;opacity:.01;overflow:hidden;pointer-events:none}
 #tResults{overflow-x:auto}
+/* variantes del interruptor háptico oculto (iPhone) */
+.hsw-a{position:fixed;bottom:0;left:0;width:24px;height:24px;opacity:0}
+.hsw-b{position:fixed;bottom:0;left:30px;width:24px;height:24px;opacity:0;display:block}
+.hsw-b input{width:24px;height:24px}
+.diag{margin-top:14px;max-width:520px}

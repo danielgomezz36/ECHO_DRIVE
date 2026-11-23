@@ -160,14 +160,23 @@
   /* iPhone: Safari no ofrece navigator.vibrate, pero un <input type="checkbox" switch> da un toque háptico
      al activarse. Solo responde a pulsaciones del usuario y no controla la duración: es una aproximación
      (un toque por cada pulso del patrón). */
-  let hapticSwitch = null;
-  function iosTick() {
-    if (!hapticSwitch) {
-      const lab = document.createElement('label'); lab.className = 'hsw'; lab.setAttribute('aria-hidden', 'true');
-      const inp = document.createElement('input'); inp.type = 'checkbox'; inp.setAttribute('switch', ''); inp.tabIndex = -1;
-      lab.appendChild(inp); document.body.appendChild(lab); hapticSwitch = lab;
-    }
-    hapticSwitch.click();
+  const hs = { A: null, B: null };
+  /* Variante A (la que usan las librerías de háptica web): <label for> + <input switch> por separado. */
+  function buildA() {
+    const inp = document.createElement('input'); inp.type = 'checkbox'; inp.setAttribute('switch', ''); inp.id = 'hsw-a'; inp.tabIndex = -1;
+    const lab = document.createElement('label'); lab.htmlFor = 'hsw-a'; lab.className = 'hsw-a'; lab.setAttribute('aria-hidden', 'true');
+    inp.className = 'hsw-a'; document.body.appendChild(inp); document.body.appendChild(lab); return lab;
+  }
+  /* Variante B: el interruptor dentro de la etiqueta. */
+  function buildB() {
+    const lab = document.createElement('label'); lab.className = 'hsw-b'; lab.setAttribute('aria-hidden', 'true');
+    const inp = document.createElement('input'); inp.type = 'checkbox'; inp.setAttribute('switch', ''); inp.tabIndex = -1;
+    lab.appendChild(inp); document.body.appendChild(lab); return lab;
+  }
+  function iosTick(v) {
+    v = v || 'A';
+    if (!hs[v]) hs[v] = v === 'A' ? buildA() : buildB();
+    hs[v].click();
   }
   function iosPattern(p) { p.forEach((x) => { if (x[0] === 0) iosTick(); else setTimeout(iosTick, x[0]); }); }
   function hapticTick() { if (navigator.vibrate) { try { navigator.vibrate(30); } catch (e) { /* noop */ } } else iosTick(); }
@@ -219,6 +228,14 @@
     ? 'El navegador ofrece la API de vibración (solo vibrará en dispositivos con motor háptico, p. ej. un móvil Android). Aquí también se simula en el volante.'
     : 'Este navegador no ofrece vibración web (iPhone/Safari). Se usa la alternativa de toques hápticos de Safari: un toque por pulso, solo al pulsar un botón y sin controlar la duración. También se simula en el volante.';
   $('#vibTest').addEventListener('click', () => { playHaptic(L.PATTERNS.critico.haptic, +$('#inten').value, 'both'); });
+
+  /* --- Diagnóstico de vibración (para localizar qué método funciona en cada dispositivo) --- */
+  const ua = navigator.userAgent || '';
+  const m = /OS (\d+)[_.](\d+)/.exec(ua);
+  $('#diagInfo').textContent = `Navegador: ${/iPhone|iPad/.test(ua) ? 'iOS' + (m ? ' ' + m[1] + '.' + m[2] + ' (según el navegador)' : '') : 'no es iPhone/iPad'} · navigator.vibrate: ${navigator.vibrate ? 'sí' : 'no'} · página segura (https): ${window.isSecureContext ? 'sí' : 'no'}`;
+  $('#diagA').addEventListener('click', () => { iosTick('A'); $('#diagMsg').textContent = 'Enviado el toque por código (variante A). ¿Lo has notado?'; });
+  $('#diagB').addEventListener('click', () => { iosTick('B'); $('#diagMsg').textContent = 'Enviado el toque por código (variante B). ¿Lo has notado?'; });
+  $('#diagReal').addEventListener('change', () => { $('#diagMsg').textContent = 'Has tocado el interruptor real. ¿Lo has notado?'; });
 
   /* --- SOS: confirmar manteniendo pulsado (feedback continuo) --- */
   const HOLD_MS = 1500, CIRC = 163.4;

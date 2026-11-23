@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EchoDrive · Demo de adaptaciones</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Filtros SVG para simular deficiencias de color (Machado et al., 2009, severidad 1.0; se aplican en RGB lineal) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="f-protanopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.152286 1.052583 -0.204868 0 0  0.114503 0.786281 0.099216 0 0  -0.003882 -0.048116 1.051998 0 0  0 0 0 1 0"/></filter>
+    <filter id="f-deuteranopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter>
+    <filter id="f-tritanopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="1.255528 -0.076749 -0.178779 0 0  -0.078411 0.930809 0.147602 0 0  0.004733 0.691367 0.303900 0 0  0 0 0 1 0"/></filter>
+  </svg>
+
+  <header class="top">
+    <h1>EchoDrive <span>· demo de adaptaciones (La Persona)</span></h1>
+    <p class="note">Prototipo de interfaz: no usa cámaras, sensores ni ADAS reales. Los datos y avisos son simulados.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Retos">
+    <button role="tab" id="tab-1" aria-controls="p1" aria-selected="true">Reto 1 · Daltonismo</button>
+    <button role="tab" id="tab-2" aria-controls="p2" aria-selected="false" tabindex="-1">Reto 4 · Concentración</button>
+    <button role="tab" id="tab-3" aria-controls="p3" aria-selected="false" tabindex="-1">Reto 9 · Feedback multimodal</button>
+    <button role="tab" id="tab-4" aria-controls="p4" aria-selected="false" tabindex="-1">Test de daltonismo</button>
+  </nav>
+
+  <main>
+    <!-- ================= RETO 1 ================= -->
+    <section id="p1" role="tabpanel" aria-labelledby="tab-1">
+      <div class="controls">
+        <label>Simular visión
+          <select id="sim">
+            <option value="normal">Normal</option>
+            <option value="protanopia">Protanopía</option>
+            <option value="deuteranopia">Deuteranopía</option>
+            <option value="tritanopia">Tritanopía</option>
+          </select>
+        </label>
+        <label>Paleta
+          <select id="pal">
+            <option value="actual">Prototipo (perfil Deuteranopía)</option>
+            <option value="propuesta" selected>Propuesta (base universal)</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="redundant" checked> Codificación redundante (icono + nivel + trazo)</label>
+      </div>
+      <div class="stage"><div id="hud1" class="hud" aria-label="Vista previa de la interfaz de a bordo"></div></div>
+      <p id="de-readout" class="readout" aria-live="polite"></p>
+      <p class="help">Prueba a poner <b>Tritanopía</b> con la paleta del prototipo y la codificación redundante desactivada: los niveles dejan de distinguirse. Con la propuesta y la codificación activada, cada nivel se reconoce por forma, texto y posición además del color.</p>
+    </section>
+
+    <!-- ================= RETO 4 ================= -->
+    <section id="p2" role="tabpanel" aria-labelledby="tab-2" hidden>
+      <div class="controls">
+        <label class="check"><input type="checkbox" id="conc" checked> Modo concentración</label>
+        <label>Velocidad: <output id="speedOut">0 km/h</output>
+          <input type="range" id="speed" min="0" max="130" value="0" aria-describedby="speedHelp">
+        </label>
+        <span id="moveState" class="pill">Parado</span>
+      </div>
+      <div class="controls">
+        <span>Lanzar aviso:</span>
+        <button data-fire="info">Info</button>
+        <button data-fire="guia">Guía</button>
+        <button data-fire="atencion">Atención</button>
+        <button data-fire="critico">Crítico</button>
+        <button id="burst" class="primary">Ráfaga de 4 avisos</button>
+        <button id="dismiss">Cerrar aviso actual</button>
+      </div>
+      <div class="stage"><div id="hud2" class="hud hud-wide"></div></div>
+      <p id="elementsReadout" class="readout" aria-live="polite"></p>
+      <p id="status2" class="readout" aria-live="polite"></p>
+      <p id="speedHelp" class="help">En marcha (≥ 5 km/h, umbral configurable) y con el modo concentración activo: el reproductor se pliega, los ajustes y la vista de cámara se bloquean, y solo hay <b>un</b> aviso visible a la vez (los demás esperan en cola según su prioridad).</p>
+    </section>
+
+    <!-- ================= RETO 9 ================= -->
+    <section id="p3" role="tabpanel" aria-labelledby="tab-3" hidden>
+      <div class="controls">
+        <fieldset>
+          <legend>Canales activos</legend>
+          <label class="check"><input type="checkbox" id="chV" checked> Visual</label>
+          <label class="check"><input type="checkbox" id="chS" checked> Sonoro</label>
+          <label class="check"><input type="checkbox" id="chH" checked> Háptico</label>
+        </fieldset>
+        <label>Intensidad
+          <select id="inten"><option value="0.6">Suave</option><option value="1" selected>Media</option><option value="1.4">Fuerte</option></select>
+        </label>
+        <label>Lado del riesgo / giro
+          <select id="side"><option value="left">Izquierda</option><option value="right">Derecha</option></select>
+        </label>
+      </div>
+      <div class="controls">
+        <span>Simular evento:</span>
+        <button data-ev="guia">Guía</button>
+        <button data-ev="atencion">Atención</button>
+        <button data-ev="critico">Crítico</button>
+        <button data-ev="confirmacion">Confirmación</button>
+        <button id="vibTest" class="primary">Probar vibración</button>
+      </div>
+
+      <div class="grid3">
+        <div class="panel">
+          <h2>Salida visual</h2>
+          <div id="visualOut" class="visualOut" aria-live="polite"><span class="muted">Sin aviso</span></div>
+          <h2>Volante (háptico)</h2>
+          <svg id="wheel" viewBox="0 0 200 120" role="img" aria-label="Volante con vibración izquierda y derecha">
+            <circle cx="100" cy="64" r="48" fill="none" stroke="#3A4756" stroke-width="10"/>
+            <circle cx="100" cy="64" r="10" fill="#3A4756"/>
+            <path id="arcL" d="M 52 64 A 48 48 0 0 1 84 19" fill="none" stroke="#2A3441" stroke-width="12" stroke-linecap="round"/>
+            <path id="arcR" d="M 148 64 A 48 48 0 0 0 116 19" fill="none" stroke="#2A3441" stroke-width="12" stroke-linecap="round"/>
+            <text x="14" y="112" fill="#9AA7B5" font-size="11">IZQ</text><text x="168" y="112" fill="#9AA7B5" font-size="11">DCHA</text>
+          </svg>
+          <p id="vibSupport" class="muted small"></p>
+        </div>
+
+        <div class="panel">
+          <h2>Acción del usuario: SOS</h2>
+          <p class="small">Mantén pulsado 1,5 s (ratón, dedo o tecla Espacio/Intro) para confirmar. Soltar antes cancela.</p>
+          <button id="sos" class="sos" aria-describedby="sosStatus">
+            <svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="26" class="ringBg"/><circle id="ring" cx="30" cy="30" r="26" class="ring"/></svg>
+            <span>SOS</span>
+          </button>
+          <p id="sosStatus" class="readout" aria-live="assertive">Listo.</p>
+          <button id="undo" hidden>Deshacer (<span id="undoLeft">5</span> s)</button>
+        </div>
+
+        <div class="panel">
+          <h2>Registro de canales</h2>
+          <ol id="log" class="log" aria-live="polite"></ol>
+        </div>
+      </div>
+      <p class="help">Un aviso <b>crítico</b> sale siempre por al menos dos canales: si has desactivado demasiados, se reactivan solo para ese aviso y el registro lo indica. La vibración real depende del dispositivo (Android/Chrome); si no está disponible se simula en el volante.</p>
+    </section>
+
+    <!-- ================= TEST DE DALTONISMO ================= -->
+    <section id="p4" role="tabpanel" aria-labelledby="tab-4" hidden>
+      <div class="controls">
+        <label>Participante <input id="tPid" type="text" placeholder="P1" size="8" autocomplete="off"></label>
+        <label>Visión declarada
+          <select id="tDecl">
+            <option>No indicada</option><option>Visión normal</option><option>Protanopía / protanomalía</option>
+            <option>Deuteranopía / deuteranomalía</option><option>Tritanopía</option><option>No lo sé</option>
+          </select>
+        </label>
+        <label>Simular visión
+          <select id="tSim"><option value="normal">Ninguna</option><option value="protanopia">Protanopía</option><option value="deuteranopia">Deuteranopía</option><option value="tritanopia">Tritanopía</option></select>
+        </label>
+        <label>Orden
+          <select id="tOrder"><option value="AB">A (solo color) → B (propuesta)</option><option value="BA">B (propuesta) → A (solo color)</option></select>
+        </label>
+        <label>Ensayos por nivel
+          <select id="tReps"><option>2</option><option selected>3</option><option>4</option></select>
+        </label>
+        <button id="tStart" class="primary">Empezar test</button>
+      </div>
+      <p class="help">El participante ve avisos con un texto neutro («Mensaje del sistema») y debe decir de qué <b>nivel</b> es. Se compara el diseño anterior (solo color) con el propuesto (color + icono + etiqueta). Se registra acierto y tiempo de respuesta. Los datos se quedan en este dispositivo; para guardarlos hay que copiarlos o descargar el CSV al final. Alterna el orden A/B entre participantes.</p>
+      <div class="stage"><div id="tStage" class="hud"><p class="muted">Rellena los datos y pulsa «Empezar test».</p></div></div>
+      <div id="tResults"></div>
+    </section>
+  </main>
+
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
